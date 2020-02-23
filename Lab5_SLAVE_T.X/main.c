@@ -48,8 +48,7 @@ void init(void) {
     OSCCONbits.IRCF0 = 1;
     OSCCONbits.IRCF1 = 1;
     OSCCONbits.IRCF2 = 1; 
-    ///////////////////////////////////////////////////////////
-//    TRISAbits.TRISA5 =1;  
+    /////////////////////////////////////////////////////////// 
 //    TRISAbits.TRISA0 =1; //POTENCIOMETRO 0 
 //    TRISAbits.TRISA1 =1; //POTENCIOMETRO 1 
     TRISD =0b00000000; //se define el puerto D como salidas
