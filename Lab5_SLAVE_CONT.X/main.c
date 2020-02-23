@@ -32,7 +32,14 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define PULSADOR_I   RD0
+#define PULSADOR_D   RD1
+
 void init(void);
+void Contador(void);
+
+uint8_t Estado1 =0;
+uint8_t Estado2 =0;
 
 void main(void) {
     init();
@@ -44,22 +51,39 @@ void main(void) {
     return;
 }
 
+void Contador(void){
+    
+    if (PULSADOR_I ==1){   
+        Estado1 =1;
+    }
+    if (Estado1 ==1 && PULSADOR_I ==0){ //boton con antirebote
+        Estado1 =0;
+        PORTD++ ;      //se incrementa el PORTD
+    }  
+    if (PULSADOR_D ==1){   
+        Estado2 =1;
+    }
+    if (Estado2 ==1 && PULSADOR_D ==0){ //boton con antirebote
+        Estado2 =0;
+        PORTD-- ;   //se decrementa el PORTD 
+    } 
+    
+   
+}
+
 void init(void) { 
     ///8MH
     OSCCONbits.IRCF0 = 1;
     OSCCONbits.IRCF1 = 1;
     OSCCONbits.IRCF2 = 1; 
     ///////////////////////////////////////////////////////////
-//    TRISAbits.TRISA5 =1;  
-//    TRISAbits.TRISA0 =1; //POTENCIOMETRO 0 
-//    TRISAbits.TRISA1 =1; //POTENCIOMETRO 1 
-    TRISD =0b00000000; //se define el puerto D como salidas
+    TRISDbits.TRISD0 =1; //PULSADOR DE INCREMENTO
+    TRISDbits.TRISD1 =1; //PULSADOR DE DECREMENTO
+    TRISD =0b11110000; //se definen los primero 4 bits puerto D como salidas
     //////////////////////////////////////////////////////////////
     PORTC =0;            //se limpia el puerto C
     PORTD =0;          //se limpia el puerto D
-    PORTA =0;          //se limpia el puerto A
     //////////////////////////////////////////////////////////
     ANSELH =0;
-//    ANSELbits.ANS0 =1; //RA0 ANALÛGICO
-//    ANSELbits.ANS1 =1; //RA1 ANALÛGICO  
+ 
 }
