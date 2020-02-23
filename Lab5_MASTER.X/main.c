@@ -32,6 +32,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "LCD.h"
+#include "I2C.h"
 
 void init(void);
 
@@ -40,6 +41,18 @@ void main(void) {
     LCD_INIT();
     
     while(1){
+//        I2C_Master_Start();
+//        I2C_Master_Write(0x50);
+//        I2C_Master_Write(PORTB);
+//        I2C_Master_Stop();
+//        __delay_ms(200);
+//       
+//        I2C_Master_Start();
+//        I2C_Master_Write(0x51);
+//        PORTD = I2C_Master_Read(0);
+//        I2C_Master_Stop();
+//        __delay_ms(200);
+//        PORTB++;   
     
     }
     return;
@@ -57,6 +70,10 @@ void init(void) {
     PORTC =0;            //se limpia el puerto C
     PORTD =0;          //se limpia el puerto D
     //////////////////////////////////////////////////////////
+    ANSEL = 0;
     ANSELH =0;
-
+    //*****************************************************************************
+    // Función de Inicialización
+    //***************************************************************************** 
+    I2C_Master_Init(100000);        // Inicializar Comuncación I2C
 }
