@@ -31,12 +31,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "ADC.h"
+#include "I2C.h"
 
 void init(void);
 
 void main(void) {
     init();
     while(1){
+        CONF_ADC();
     
     }
     return;
@@ -49,16 +52,11 @@ void init(void) {
     OSCCONbits.IRCF1 = 1;
     OSCCONbits.IRCF2 = 1; 
     ///////////////////////////////////////////////////////////
-//    TRISAbits.TRISA5 =1;  
-//    TRISAbits.TRISA0 =1; //POTENCIOMETRO 0 
-//    TRISAbits.TRISA1 =1; //POTENCIOMETRO 1 
-    TRISD =0b00000000; //se define el puerto D como salidas
+    TRISAbits.TRISA0 =1; //POTENCIOMETRO 0 
     //////////////////////////////////////////////////////////////
     PORTC =0;            //se limpia el puerto C
-    PORTD =0;          //se limpia el puerto D
     PORTA =0;          //se limpia el puerto A
     //////////////////////////////////////////////////////////
     ANSELH =0;
-//    ANSELbits.ANS0 =1; //RA0 ANALÛGICO
-//    ANSELbits.ANS1 =1; //RA1 ANALÛGICO  
+    ANSELbits.ANS0 =1; //RA0 ANALÛGICO
 }
