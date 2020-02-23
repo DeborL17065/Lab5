@@ -67,7 +67,7 @@ void __interrupt() isr(void){
         }else if(!SSPSTATbits.D_nA && SSPSTATbits.R_nW){
             z = SSPBUF;
             BF = 0;
-            SSPBUF = PORTB;
+            SSPBUF = SENSOR1;
             SSPCONbits.CKP = 1;
             __delay_us(250);
             while(SSPSTATbits.BF);
@@ -102,5 +102,5 @@ void init(void) {
     ANSELH =0;
     ANSELbits.ANS0 =1; //RA0 ANALÛGICO
     
-   // I2C_Slave_Init(0x50); 
+    I2C_Slave_Init(0x60); 
 }
