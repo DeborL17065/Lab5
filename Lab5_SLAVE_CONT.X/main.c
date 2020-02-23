@@ -33,11 +33,11 @@
 #include <stdlib.h>
 #include "I2C.h"
 
-#define PULSADOR_I   RD0
-#define PULSADOR_D   RD1
+#define PULSADOR_I   RC0
+#define PULSADOR_D   RC1
 
 void init(void);
-void Contador(void);
+void CONTADOR(void);
 
 uint8_t Estado1 =0;
 uint8_t Estado2 =0;
@@ -48,10 +48,12 @@ uint8_t dato;
 // Código de Interrupción 
 //*****************************************************************************
 void __interrupt() isr(void){
-   if(PIR1bits.SSPIF == 1){ 
+    
+    
+    if(PIR1bits.SSPIF == 1){ 
 
         SSPCONbits.CKP = 0;
-       
+
         if ((SSPCONbits.SSPOV) || (SSPCONbits.WCOL)){
             z = SSPBUF;                 // Read the previous value to clear the buffer
             SSPCONbits.SSPOV = 0;       // Clear the overflow flag
@@ -66,18 +68,18 @@ void __interrupt() isr(void){
             PIR1bits.SSPIF = 0;         // Limpia bandera de interrupción recepción/transmisión SSP
             SSPCONbits.CKP = 1;         // Habilita entrada de pulsos de reloj SCL
             while(!SSPSTATbits.BF);     // Esperar a que la recepción se complete
-////            PORTD = SSPBUF;             // Guardar en el PORTD el valor del buffer de recepción
-////            __delay_us(250);
-            
+    ////            PORTD = SSPBUF;             // Guardar en el PORTD el valor del buffer de recepción
+    ////            __delay_us(250);
+
         }else if(!SSPSTATbits.D_nA && SSPSTATbits.R_nW){
             z = SSPBUF;
             BF = 0;
-            SSPBUF = PORTB;
+            SSPBUF = PORTD;
             SSPCONbits.CKP = 1;
             __delay_us(250);
             while(SSPSTATbits.BF);
         }
-       
+
         PIR1bits.SSPIF = 0;    
     }
 }
@@ -85,6 +87,23 @@ void __interrupt() isr(void){
 void main(void) {
     init();
     while(1){ 
+        
+        //CONTADOR();
+        if (PULSADOR_I ==1){   
+        Estado1 =1;
+        }
+        if (Estado1 ==1 && PULSADOR_I ==0){ //boton con antirebote
+            Estado1 =0;
+            PORTD++ ;      //se incrementa el PORTD
+        }  
+        if (PULSADOR_D ==1){   
+            Estado2 =1;
+        }
+        if (Estado2 ==1 && PULSADOR_D ==0){ //boton con antirebote
+            Estado2 =0;
+            PORTD-- ;   //se decrementa el PORTD 
+        }
+        
         
 //        PORTB = ~PORTB;
 //        __delay_ms(500);
@@ -95,7 +114,7 @@ void main(void) {
     return;
 }
 
-void Contador(void){
+void CONTADOR(void){
     
     if (PULSADOR_I ==1){   
         Estado1 =1;
@@ -110,7 +129,8 @@ void Contador(void){
     if (Estado2 ==1 && PULSADOR_D ==0){ //boton con antirebote
         Estado2 =0;
         PORTD-- ;   //se decrementa el PORTD 
-    } 
+    }
+    return ;
     
    
 }
@@ -121,8 +141,8 @@ void init(void) {
     OSCCONbits.IRCF1 = 1;
     OSCCONbits.IRCF2 = 1; 
     ///////////////////////////////////////////////////////////
-    TRISDbits.TRISD0 =1; //PULSADOR DE INCREMENTO
-    TRISDbits.TRISD1 =1; //PULSADOR DE DECREMENTO
+    TRISCbits.TRISC0 =1; //PULSADOR DE INCREMENTO
+    TRISCbits.TRISC1 =1; //PULSADOR DE DECREMENTO
     TRISD =0b11110000; //se definen los primero 4 bits puerto D como salidas
     //////////////////////////////////////////////////////////////
     PORTC =0;            //se limpia el puerto C
@@ -131,6 +151,6 @@ void init(void) {
     ANSEL = 0;
     ANSELH =0;
     
-   // I2C_Slave_Init(0x50);   
+    I2C_Slave_Init(0x50);   
  
 }
