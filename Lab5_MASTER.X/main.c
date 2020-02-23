@@ -36,23 +36,57 @@
 
 void init(void);
 
+uint8_t S_CONT;
+uint8_t S_POT;
+char SA[5],SB[5],SC[5];
+
+void __interrupt() isr(void){
+    
+//    I2C_Master_Start();
+//    I2C_Master_Write(0x51);
+//    S_CONT = I2C_Master_Read(0);
+////        I2C_Master_Write(0x0F);
+//    I2C_Master_Stop();
+//    __delay_ms(200);
+
+
+}
+
 void main(void) {
     init();
     LCD_INIT();
     
     while(1){
-//        I2C_Master_Start();
-//        I2C_Master_Write(0x50);
-//        I2C_Master_Write(PORTB);
-//        I2C_Master_Stop();
-//        __delay_ms(200);
+        I2C_Master_Start();
+        I2C_Master_Write(0x51);
+        S_CONT = I2C_Master_Read(0);
+//        I2C_Master_Write(0x0F);
+        I2C_Master_Stop();
+        __delay_ms(200);
+        
+        I2C_Master_Start();
+        I2C_Master_Write(0x61);
+        S_POT = I2C_Master_Read(0);
+//        I2C_Master_Write(0x0F);
+        I2C_Master_Stop();
+        __delay_ms(200);
 //       
 //        I2C_Master_Start();
 //        I2C_Master_Write(0x51);
-//        PORTD = I2C_Master_Read(0);
+//        S_CONT = I2C_Master_Read(0);
 //        I2C_Master_Stop();
 //        __delay_ms(200);
-//        PORTB++;   
+//        PORTB++;  
+        itoa(SC,S_CONT,10);
+        itoa(SB,S_POT,10);
+        Lcd_Clear();
+        LCD_XY(0,2);
+        LCD_Cadena("S1:  S2:  S3:"); 
+        LCD_XY(1,2);
+        LCD_Cadena(SC);//manda el dato a la LCD
+        LCD_XY(1,7);
+        LCD_Cadena(SB);//manda el dato a la LCD
+
     
     }
     return;
@@ -75,5 +109,7 @@ void init(void) {
     //*****************************************************************************
     // Función de Inicialización
     //***************************************************************************** 
+    INTCONbits.GIE = 1;
+    INTCONbits.PEIE = 1;
     I2C_Master_Init(100000);        // Inicializar Comuncación I2C
 }
